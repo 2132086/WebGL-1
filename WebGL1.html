@@ -12,8 +12,10 @@
 
     var width = 1024,
         height = 700,
-        rot = 0;
-        t=0;
+        rot = 0,
+        rot2 = 0,
+        mouseX = 0,
+        t=0,
         down=0;
   
     // レンダラーを作成
@@ -26,58 +28,67 @@
   
     // カメラを作成
     var camera = new THREE.PerspectiveCamera(60, width / height);
-
-    //台
-    var cylinderGeometry = new THREE.CylinderGeometry ( 2, 2.25, 1, 10, false );
-    var cylinderMaterial = new THREE. MeshPhongMaterial( {color: 0xffffff} );
-    var bottom = new THREE.Mesh( cylinderGeometry, cylinderMaterial );
-    bottom.position.set( 0, 0, 10);
-    scene.add( bottom );
-
-    //柱
-    var cylinderGeometry = new THREE.CylinderGeometry ( 1, 1.8, 15, 8, false );
-    var cylinderMaterial = new THREE. MeshPhongMaterial( {color: 0xffffff} );
-    var pole = new THREE.Mesh( cylinderGeometry, cylinderMaterial );
-    pole.position.set( 0,7.5, 10);
-    scene.add( pole );
-
-    var cylinderGeometry = new THREE.CylinderGeometry ( 0.6, 1, 35, 4, false );
-    var cylinderMaterial = new THREE. MeshPhongMaterial( {color: 0xffffff} );
-    var pole2 = new THREE.Mesh( cylinderGeometry, cylinderMaterial );
-    pole2.position.set( 0,17.5, 10);
-    scene.add( pole2 );
-
-    //電灯
-    var cylinderGeometry = new THREE.CylinderGeometry ( 1.4, 0.6, 1, 6);
-    var cylinderMaterial = new THREE. MeshPhongMaterial( {color: 0xffffff} );
-    var lightbottom = new THREE.Mesh( cylinderGeometry, cylinderMaterial );
-    lightbottom.position.set( 0, 35.5, 10);
-    scene.add( lightbottom );
-
-    var cylinderGeometry = new THREE.CylinderGeometry ( 2, 1.3, 3, 6, 1);
-    var cylinderMaterial = new THREE. MeshPhongMaterial( {color: 0xffffff,wireframe: true} );
-    var bulb = new THREE.Mesh( cylinderGeometry, cylinderMaterial );
-    bulb.position.set( 0, 37.5, 10);
-    scene.add( bulb );
-
-    var cylinderGeometry = new THREE.CylinderGeometry ( 0.6, 2.1, 1, 6);
-    var cylinderMaterial = new THREE. MeshPhongMaterial( {color: 0xffffff} );
-    var lighttop = new THREE.Mesh( cylinderGeometry, cylinderMaterial );
-    lighttop.position.set( 0,39.5, 10);
-    scene.add( lighttop );
-
-    var cylinderGeometry = new THREE.CylinderGeometry ( 0.6, 0.6, 0.5, 6);
-    var cylinderMaterial = new THREE. MeshPhongMaterial( {color: 0xffffff} );
-    var lighttop2 = new THREE.Mesh( cylinderGeometry, cylinderMaterial );
-    lighttop2.position.set( 0,40.25, 10);
-    scene.add( lighttop2 );
-
     
-    var cylinderGeometry = new THREE.CylinderGeometry ( 0.2, 0.3, 1, 6);
-    var cylinderMaterial = new THREE. MeshPhongMaterial( {color: 0xffffff} );
-    var lighttop3 = new THREE.Mesh( cylinderGeometry, cylinderMaterial );
-    lighttop3.position.set( 0,41, 10);
-    scene.add( lighttop3 );
+    // マウス座標はマウスが動いた時のみ取得できる
+    /*document.addEventListener('mouseclicked', (event) => {
+      mouseX = event.pageX;
+    });*/
+
+    //街灯
+    var streetlamp = new THREE.Object3D();
+      //台
+      var cylinderGeometry = new THREE.CylinderGeometry ( 2, 2.25, 1, 10, false );
+      var cylinderMaterial = new THREE. MeshPhongMaterial( {color: 0xffffff} );
+      var bottom = new THREE.Mesh( cylinderGeometry, cylinderMaterial );
+      bottom.position.set( 0, 0, 10);
+      streetlamp.add( bottom );
+
+      //柱
+      var cylinderGeometry = new THREE.CylinderGeometry ( 1, 1.8, 15, 8, false );
+      var cylinderMaterial = new THREE. MeshPhongMaterial( {color: 0xffffff} );
+      var pole = new THREE.Mesh( cylinderGeometry, cylinderMaterial );
+      pole.position.set( 0,7.5, 10);
+      streetlamp.add( pole );
+
+      var cylinderGeometry = new THREE.CylinderGeometry ( 0.6, 1, 35, 4, false );
+      var cylinderMaterial = new THREE. MeshPhongMaterial( {color: 0xffffff} );
+      var pole2 = new THREE.Mesh( cylinderGeometry, cylinderMaterial );
+      pole2.position.set( 0,17.5, 10);
+      scene.add( pole2 );
+
+      //電灯
+      var cylinderGeometry = new THREE.CylinderGeometry ( 1.4, 0.6, 1, 6);
+      var cylinderMaterial = new THREE. MeshPhongMaterial( {color: 0xffffff} );
+      var lightbottom = new THREE.Mesh( cylinderGeometry, cylinderMaterial );
+      lightbottom.position.set( 0, 35.5, 10);
+      streetlamp.add( lightbottom );
+
+      var cylinderGeometry = new THREE.CylinderGeometry ( 2, 1.3, 3, 6, 1);
+      var cylinderMaterial = new THREE. MeshPhongMaterial( {color: 0xffffff,wireframe: true} );
+      var bulb = new THREE.Mesh( cylinderGeometry, cylinderMaterial );
+      bulb.position.set( 0, 37.5, 10);
+      streetlamp.add( bulb );
+
+      var cylinderGeometry = new THREE.CylinderGeometry ( 0.6, 2.1, 1, 6);
+      var cylinderMaterial = new THREE. MeshPhongMaterial( {color: 0xffffff} );
+      var lighttop = new THREE.Mesh( cylinderGeometry, cylinderMaterial );
+      lighttop.position.set( 0,39.5, 10);
+      streetlamp.add( lighttop );
+
+      var cylinderGeometry = new THREE.CylinderGeometry ( 0.6, 0.6, 0.5, 6);
+      var cylinderMaterial = new THREE. MeshPhongMaterial( {color: 0xffffff} );
+      var lighttop2 = new THREE.Mesh( cylinderGeometry, cylinderMaterial );
+      lighttop2.position.set( 0,40.25, 10);
+      streetlamp.add( lighttop2 );
+
+      
+      var cylinderGeometry = new THREE.CylinderGeometry ( 0.2, 0.3, 1, 6);
+      var cylinderMaterial = new THREE. MeshPhongMaterial( {color: 0xffffff} );
+      var lighttop3 = new THREE.Mesh( cylinderGeometry, cylinderMaterial );
+      lighttop3.position.set( 0,41, 10);
+      streetlamp.add( lighttop3 );
+
+    scene.add(streetlamp);
 
 
     //ボール
@@ -109,17 +120,25 @@
       }
       if(down==0){
         ball.position.y=4.9*(1.75-t)*(1.75-t);
-        t +=0.016;
+        t +=0.16;
       }
       if(down==1){
         ball.position.y=-4.9*(1.75-t)*(1.75-t);
-        t -=0.016;
+        t -=0.16;
       }
+
       rot +=0.2;
       var radian = rot * Math.PI / 180;
       camera.position.x = 50 * Math.sin(radian);
       camera.position.y = 20;
       camera.position.z = 50 * Math.cos(radian);
+
+      /*var targetRot = (mouseX / window.innerWidth) * 360;
+      rot2 += (targetRot - rot) * 0.02;
+      var radian2 = rot2 * Math.PI / 180;
+      camera.position.x = 50 * Math.sin(radian2);
+      camera.position.z = 50 * Math.cos(radian2);*/
+
       camera.lookAt(new THREE.Vector3(0, 20, 0));
       requestAnimationFrame(update);
       renderer.render(scene, camera);
