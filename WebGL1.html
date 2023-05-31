@@ -1,56 +1,53 @@
-<!DOCTYPE html>
-<html lang="ja">
-<head>
-  <meta charset="UTF-8">
-  <title>WebGL1</title>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/99/three.min.js"></script>
-  <script src="https://unpkg.com/three@0.147.0/examples/js/controls/OrbitControls.js"></script>
-</head>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <script src="https://unpkg.com/three@0.137.4/build/three.min.js"></script>
+    <script src="https://unpkg.com/three@0.137.4/examples/js/controls/OrbitControls.js"></script>
+  </head>
 <body>
  <script>
-  var init = function() {
+      // ページの読み込みを待つ
+      window.addEventListener('DOMContentLoaded', init);
 
-    var width = 1024,
-        height = 700,
-        rot = 0,
-        rot2 = 0,
-        mouseX = 0,
-        t=0,
-        down=0;
-  
-    // レンダラーを作成
-    var renderer = new THREE.WebGLRenderer();
-    renderer.setSize(width, height);
-    document.body.appendChild(renderer.domElement);
-  
-    // シーンを作成
-    var scene = new THREE.Scene();
-  
-    // カメラを作成
-    var camera = new THREE.PerspectiveCamera(60, width / height);
-    
-    // マウス座標はマウスが動いた時のみ取得できる
-    /*document.addEventListener('mouseclicked', (event) => {
-      mouseX = event.pageX;
-    });*/
+      function init() {
+        // サイズを指定
+        const width = 800
+        const height = 600;
+        var rot = 0;
 
+        // レンダラーを作成
+        var renderer = new THREE.WebGLRenderer();
+        document.body.appendChild(renderer.domElement);
+        renderer.setSize(width, height);
+
+        // シーンを作成
+        const scene = new THREE.Scene();
+
+        // カメラを作成
+        const camera = new THREE.PerspectiveCamera(45, width / height);
+        // カメラの初期座標を設定
+        camera.position.set(0, 30, 60);
+
+        // カメラコントローラーを作成
+        const controls = new THREE.OrbitControls(camera, document.body); 
+        
     //街灯
     var streetlamp = new THREE.Object3D();
       //台
-      var cylinderGeometry = new THREE.CylinderGeometry ( 2, 2.25, 1, 10, false );
+      var cylinderGeometry = new THREE.CylinderGeometry ( 2, 2.25, 1, 10);
       var cylinderMaterial = new THREE. MeshPhongMaterial( {color: 0xffffff} );
       var bottom = new THREE.Mesh( cylinderGeometry, cylinderMaterial );
       bottom.position.set( 0, 0, 10);
       streetlamp.add( bottom );
 
       //柱
-      var cylinderGeometry = new THREE.CylinderGeometry ( 1, 1.8, 15, 8, false );
+      var cylinderGeometry = new THREE.CylinderGeometry ( 1, 1.8, 15, 8);
       var cylinderMaterial = new THREE. MeshPhongMaterial( {color: 0xffffff} );
       var pole = new THREE.Mesh( cylinderGeometry, cylinderMaterial );
       pole.position.set( 0,7.5, 10);
       streetlamp.add( pole );
 
-      var cylinderGeometry = new THREE.CylinderGeometry ( 0.6, 1, 35, 4, false );
+      var cylinderGeometry = new THREE.CylinderGeometry ( 0.6, 1, 35, 4);
       var cylinderMaterial = new THREE. MeshPhongMaterial( {color: 0xffffff} );
       var pole2 = new THREE.Mesh( cylinderGeometry, cylinderMaterial );
       pole2.position.set( 0,17.5, 10);
@@ -94,59 +91,49 @@
     //ボール
     var sphereGeometry = new THREE.SphereGeometry( 1.5, 8, 8 ); 
     var sphereMaterial = new THREE. MeshPhongMaterial( {color: 0xffffff,wireframe: true} );
-    var ball = new THREE.Mesh( sphereGeometry, sphereMaterial )
+    var ball = new THREE.Mesh( sphereGeometry, sphereMaterial );
     ball.position.set( 10, 1.5, -15 );
     scene.add( ball );
 
+    //地面
+    var planeGeometry = new THREE.PlaneGeometry(50,50);
+    var planeMaterial = new THREE. MeshPhongMaterial( {color: 0x446433} );
+    var ground = new THREE.Mesh( planeGeometry, planeMaterial );
+    ground.receiveShadow = true;
+    ground.rotation.set( -Math.PI/2, 0, 0 );
+    ground.position.set(0,0,0);
+    scene.add( ground );
+
     //環境光
-    var ambientlight = new THREE.AmbientLight(0xffa954, 0.3);
+    var ambientlight = new THREE.AmbientLight(0xffa954, 0.1);
     scene.add(ambientlight);
     //街灯
-    var pointlight = new THREE.PointLight(0xFFFFFF, 2, 100, 1);
+    var pointlight = new THREE.PointLight(0xFFFFFF, 2, 100, 0.5);
     pointlight.position.set(0,40,10);
     scene.add(pointlight);
     //太陽光
     var pointlight = new THREE.PointLight(0xf29944, 2, 200, 1);
     pointlight.position.set(-100,50,-100);
     scene.add(pointlight);
-  
-    // 初回実行
-    var update = function() {
-      if(t==0){
-        down=0;
-      }
-      if(t=1.6){
-        down=1;
-      }
-      if(down==0){
-        ball.position.y=4.9*(1.75-t)*(1.75-t);
-        t +=0.16;
-      }
-      if(down==1){
-        ball.position.y=-4.9*(1.75-t)*(1.75-t);
-        t -=0.16;
-      }
 
-      rot +=0.2;
-      var radian = rot * Math.PI / 180;
-      camera.position.x = 50 * Math.sin(radian);
-      camera.position.y = 20;
-      camera.position.z = 50 * Math.cos(radian);
-
-      /*var targetRot = (mouseX / window.innerWidth) * 360;
-      rot2 += (targetRot - rot) * 0.02;
-      var radian2 = rot2 * Math.PI / 180;
-      camera.position.x = 50 * Math.sin(radian2);
-      camera.position.z = 50 * Math.cos(radian2);*/
-
-      camera.lookAt(new THREE.Vector3(0, 20, 0));
-      requestAnimationFrame(update);
-      renderer.render(scene, camera);
-    }
 
     update();
-  }
-  window.addEventListener('DOMContentLoaded', init);
-</script>
+    // 毎フレーム時に実行されるループイベントです
+    function update() {
+      rot +=1.8;
+      var radian = rot * Math.PI / 180;
+      if(Math.sin(radian)>=0){ball.position.y = 10 * Math.sin(radian) +1.5;}
+      else{ball.position.y = -10 * Math.sin(radian) +1.5;}
+      ball.rotation.x += 0.01;
+      ball.rotation.y += 0.01;
+
+
+      camera.lookAt(new THREE.Vector3(0, 20, 0));
+      // レンダリング
+      renderer.render(scene, camera);
+      requestAnimationFrame(update);
+      }
+    }
+    </script>
 </body>
 </html>
